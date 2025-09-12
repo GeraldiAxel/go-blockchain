@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-	"strconv"
 )
 
-const targetBits = 24
-const maxNonce = math.MaxInt64
+var (
+	maxNonce = math.MaxInt64
+)
+
+const targetBits = 16
 
 type ProofOfWork struct {
 	block  *Block
@@ -26,10 +28,6 @@ func NewProofOfWork(b *Block) *ProofOfWork {
 	return pow
 }
 
-func IntToHex(n int64) []byte {
-	return []byte(strconv.FormatInt(n, 16))
-}
-
 func (pow *ProofOfWork) prepareData(nonce int) []byte {
 	data := bytes.Join(
 		[][]byte{
@@ -37,8 +35,10 @@ func (pow *ProofOfWork) prepareData(nonce int) []byte {
 			pow.block.Data,
 			IntToHex(pow.block.Timestamp),
 			IntToHex(int64(targetBits)),
-			IntToHex(int64(nonce))},
-		[]byte{})
+			IntToHex(int64(nonce)),
+		},
+		[]byte{},
+	)
 
 	return data
 }
@@ -51,6 +51,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	fmt.Printf("Mining the block containing \"%s\"\n", pow.block.Data)
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce)
+
 		hash = sha256.Sum256(data)
 		fmt.Printf("\r%x", hash)
 		hashInt.SetBytes(hash[:])
@@ -61,7 +62,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 			nonce++
 		}
 	}
-	fmt.Printf("\n\n")
+	fmt.Print("\n\n")
 
 	return nonce, hash[:]
 }
