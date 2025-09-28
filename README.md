@@ -23,8 +23,8 @@ This project demonstrates fundamental blockchain concepts such as blocks, transa
 Clone the repository:
 
 ```bash
-git clone https://github.com/GeraldiAxel/blockchain-go.git
-cd blockchain-go
+https://github.com/GeraldiAxel/go-blockchain.git
+cd go-blockchain
 ```
 
 Build the project:
